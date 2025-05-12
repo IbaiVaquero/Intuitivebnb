@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "964976379949",
+    "project_id": "intuitivebnb",
+    "storage_bucket": "intuitivebnb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964976379949:android:2391f57a91db8a8d2690a4",
+        "android_client_info": {
+          "package_name": "com.example.intuitivebnb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9nDMz376k_L3RvSSJfyaHgATXpq5A3QA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FlatEdit">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnAddImages"
+            android:layout_width="350dp"
+            android:layout_height="51dp"
+            android:backgroundTint="#31ABFF"
+            android:fontFamily="@font/poppins_extrabold"
+            android:text="Añadir Fotos"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.524"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.707" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="350dp"
+            android:layout_height="51dp"
+            android:backgroundTint="#31ABFF"
+            android:fontFamily="@font/poppins_extrabold"
+            android:text="Guardar"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.524"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.8" />
+
+        <EditText
+            android:id="@+id/editFlatDescription"
+            android:layout_width="350dp"
+            android:layout_height="103dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Descripcion"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.524"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.32" />
+
+        <EditText
+            android:id="@+id/editAddTitle"
+            android:layout_width="349dp"
+            android:layout_height="35dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Titulo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.532"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.219" />
+
+        <EditText
+            android:id="@+id/editFlatImage"
+            android:layout_width="349dp"
+            android:layout_height="35dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Imagen(URL)"
+            app:layout_constraintBottom_toTopOf="@+id/btnAddImages"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editFlatLocation" />
+
+        <EditText
+            android:id="@+id/editFlatLocation"
+            android:layout_width="349dp"
+            android:layout_height="35dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="ubicacion(latiud,longitud)"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.53" />
+
+        <EditText
+            android:id="@+id/editFlatPrice"
+            android:layout_width="349dp"
+            android:layout_height="35dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Precio"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.462" />
+
+        <TextView
+            android:id="@+id/tituloLoging3"
+            android:layout_width="245dp"
+            android:layout_height="46dp"
+            android:fontFamily="@font/poppins_extrabold"
+            android:gravity="center"
+            android:text="Intuitivebnb"
+            android:textColor="#31ABFF"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.072" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

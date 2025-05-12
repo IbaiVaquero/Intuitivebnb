@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Loging">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnLoging"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="160dp"
+            android:backgroundTint="#31ABFF"
+            android:fontFamily="@font/poppins_extrabold"
+            android:text="Login"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tituloLoging"
+            android:layout_width="245dp"
+            android:layout_height="46dp"
+            android:fontFamily="@font/poppins_extrabold"
+            android:gravity="center"
+            android:text="Intuitivebnb"
+            android:textColor="#31ABFF"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.159" />
+
+        <EditText
+            android:id="@+id/editFlatDescription"
+            android:layout_width="226dp"
+            android:layout_height="34dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Password"
+            app:layout_constraintBottom_toTopOf="@+id/btnLoging"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editMailLging"
+            app:layout_constraintVertical_bias="0.206" />
+
+        <EditText
+            android:id="@+id/editMailLging"
+            android:layout_width="226dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="116dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Mail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tituloLoging" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

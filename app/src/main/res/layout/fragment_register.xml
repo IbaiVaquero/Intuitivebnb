@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Loging">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="160dp"
+            android:backgroundTint="#31ABFF"
+            android:fontFamily="@font/poppins_extrabold"
+            android:text="Sign Up"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tituloSingUp"
+            android:layout_width="245dp"
+            android:layout_height="46dp"
+            android:fontFamily="@font/poppins_extrabold"
+            android:gravity="center"
+            android:text="Intuitivebnb"
+            android:textColor="#31ABFF"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.159" />
+
+        <EditText
+            android:id="@+id/editMailSignUp"
+            android:layout_width="226dp"
+            android:layout_height="34dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Mail"
+            app:layout_constraintBottom_toTopOf="@+id/editPasswordSignUp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editNameSignUp" />
+
+        <EditText
+            android:id="@+id/editPasswordSignUp"
+            android:layout_width="226dp"
+            android:layout_height="34dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Password"
+            app:layout_constraintBottom_toTopOf="@+id/cbRoleSignUp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/editNameSignUp"
+            android:layout_width="226dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="44dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:text="Name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tituloSingUp" />
+
+        <Spinner
+            android:id="@+id/cbRoleSignUp"
+            android:layout_width="225dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="80dp"
+            android:background="@drawable/edittext_border"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/btnSignUp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
