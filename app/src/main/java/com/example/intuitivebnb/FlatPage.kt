@@ -37,13 +37,26 @@ class FlatPage : Fragment() {
         val btnBack = view.findViewById<Button>(R.id.btnBack)
         val btnImagesFlat = view.findViewById<Button>(R.id.btnImagesFlat)
         val btnFlatReviews = view.findViewById<Button>(R.id.btnReviews)
-            btnBack.setOnClickListener {
-                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.contenedor, SearchMap()) // Reemplazar el fragmento actual con SearchMap
-                transaction.addToBackStack(null) // Añadir a la pila de retroceso si deseas poder volver al fragmento anterior
-                transaction.commit() // Confirmar la transacción
-            }
 
+        btnBack.setOnClickListener {
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.contenedor, SearchMap())
+                transaction.addToBackStack(null)
+                transaction.commit()
+        }
+
+        db.collection("reviews")
+            .whereEqualTo("flatName", title)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val rate = document.getDouble("rate")
+                    textAssessment.text = rate.toString()
+                }
+            }
+            .addOnFailureListener { exception ->
+                exception.printStackTrace()
+            }
 
         db.collection("flats")
             .whereEqualTo("title", title)
@@ -54,12 +67,10 @@ class FlatPage : Fragment() {
                     val image = document.getString("image")
                     val description = document.getString("description")
                     val price = document.getString("price")
-                    val calification = document.getDouble("calification")
                     isBooked = document.getBoolean("booked") ?: false
 
                     // Actualizar UI
                     titleflatPage.text = title
-                    textAssessment.text = calification.toString()
                     textPrice.text = price
                     textDescription.text = description
                     Picasso.get().load(image).into(imageViewFlat)
@@ -70,6 +81,8 @@ class FlatPage : Fragment() {
             .addOnFailureListener { exception ->
                 exception.printStackTrace()
             }
+
+
 
         btnBook.setOnClickListener {
             flatId?.let { id ->
@@ -94,10 +107,20 @@ class FlatPage : Fragment() {
             transaction.commit()
         }
 
+        btnImagesFlat.setOnClickListener {
+            val title = titleflatPage.text.toString()
 
+            val bundle = Bundle()
+            bundle.putString("title", title)
 
+            val reviewsFragment = FlatImages()
+            reviewsFragment.arguments = bundle
 
-
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.contenedor, reviewsFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
 
         return view
     }

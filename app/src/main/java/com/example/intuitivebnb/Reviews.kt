@@ -37,7 +37,6 @@ class Reviews : Fragment() {
         val btnBackReview = view.findViewById<Button>(R.id.btnBackReview)
         val rateEdit = view.findViewById<EditText>(R.id.editRate)
         val commentEdit = view.findViewById<EditText>(R.id.editComment)
-
         val btnAddReview = view.findViewById<Button>(R.id.btnAddReview)
         btnAddReview.setOnClickListener {
             if (SessionManager.isUserLoggedIn()) {

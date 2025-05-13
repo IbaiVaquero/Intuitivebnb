@@ -11,25 +11,52 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="367dp"
-            android:layout_height="29dp"
+            android:id="@+id/titleFlatPage4"
+            android:layout_width="411dp"
+            android:layout_height="38dp"
             android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_extrabold"
             android:gravity="center"
-            android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/imagesBox"
+            android:text="Intuitivebnb"
+            android:textColor="#31ABFF"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/btnLogingPrincipal"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.438" />
 
-        <LinearLayout
-            android:id="@+id/imagesBox"
+        <ScrollView
+            android:id="@+id/scrollView2"
             android:layout_width="413dp"
-            android:layout_height="677dp"
-            android:orientation="vertical"
+            android:layout_height="608dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="-1dp">
+
+            <LinearLayout
+                android:id="@+id/imagesBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btnBackImages"
+            android:layout_width="147dp"
+            android:layout_height="49dp"
+            android:backgroundTint="#31ABFF"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Volver"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleFlatPage4" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
