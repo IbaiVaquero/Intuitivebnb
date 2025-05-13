@@ -35,14 +35,15 @@ class FlatPage : Fragment() {
         val textPrice = view.findViewById<TextView>(R.id.textPrice)
         val textDescription = view.findViewById<TextView>(R.id.textDescription)
         val btnBack = view.findViewById<Button>(R.id.btnBack)
-        btnBack.setOnClickListener {
+        val btnImagesFlat = view.findViewById<Button>(R.id.btnImagesFlat)
+        val btnFlatReviews = view.findViewById<Button>(R.id.btnReviews)
             btnBack.setOnClickListener {
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.contenedor, SearchMap()) // Reemplazar el fragmento actual con SearchMap
                 transaction.addToBackStack(null) // Añadir a la pila de retroceso si deseas poder volver al fragmento anterior
                 transaction.commit() // Confirmar la transacción
             }
-        }
+
 
         db.collection("flats")
             .whereEqualTo("title", title)
@@ -77,6 +78,24 @@ class FlatPage : Fragment() {
                 updateButtonUI(btnBook, isBooked)
             }
         }
+
+        btnFlatReviews.setOnClickListener {
+            val title = titleflatPage.text.toString()
+
+            val bundle = Bundle()
+            bundle.putString("title", title)
+
+            val reviewsFragment = Reviews()
+            reviewsFragment.arguments = bundle
+
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.contenedor, reviewsFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+
+
 
 
 

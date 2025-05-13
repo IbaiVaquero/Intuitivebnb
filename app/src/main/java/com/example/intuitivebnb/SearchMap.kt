@@ -98,25 +98,7 @@ class SearchMap : Fragment(), OnMapReadyCallback {
         val flatView: View = inflater.inflate(R.layout.flat_view, addRows, false)
         val titleTextView = flatView.findViewById<TextView>(R.id.myAddTitle)
         val descriptionTextView = flatView.findViewById<TextView>(R.id.myAddDescription)
-        val priceTextView = flatView.findViewById<TextView>(R.id.myAddPrice)package com.example.agaleusincidentes
-
-        import android.os.Bundle
-                import android.webkit.WebView
-                import androidx.appcompat.app.AppCompatActivity
-
-        class MainActivity : AppCompatActivity() {
-            override fun onCreate(savedInstanceState: Bundle?) {
-                super.onCreate(savedInstanceState)
-
-                // Esta línea es obligatoria para que el layout se cargue
-                setContentView(R.layout.activity_main)
-
-                val webView = findViewById<WebView>(R.id.webview)
-                webView.settings.javaScriptEnabled = true
-                webView.loadUrl("https://forms.office.com/e/PkQx2XgxFQ")
-            }
-        }
-
+        val priceTextView = flatView.findViewById<TextView>(R.id.myAddPrice)
         val imageImageView = flatView.findViewById<ImageView>(R.id.myAddImage)
         val btnEnterFlat = flatView.findViewById<Button>(R.id.btnEnterBookedFlat)
 

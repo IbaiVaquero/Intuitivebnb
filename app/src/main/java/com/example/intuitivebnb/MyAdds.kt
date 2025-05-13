@@ -26,7 +26,7 @@ class MyAdds : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_adds, container, false)
-        myAdds = view.findViewById(R.id.myAdds)
+        myAdds = view.findViewById(R.id.flatReviews)
         val btnNewAdd: Button = view.findViewById(R.id.btnNewAdd)
         btnNewAdd.setOnClickListener{
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
