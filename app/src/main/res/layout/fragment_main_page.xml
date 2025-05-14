@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/frameLayoutContainer"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,7 +15,7 @@
             android:id="@+id/btnLogingPrincipal"
             android:layout_width="250dp"
             android:layout_height="80dp"
-            android:layout_marginBottom="84dp"
+            android:layout_marginBottom="100dp"
             android:backgroundTint="#31ABFF"
             android:fontFamily="@font/poppins_extrabold"
             android:text="Loging"
@@ -28,7 +29,7 @@
             android:id="@+id/btnSingUpPrincipal"
             android:layout_width="150dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="180dp"
+            android:layout_marginBottom="204dp"
             android:backgroundTint="#31ABFF"
             android:fontFamily="@font/poppins_extrabold"
             android:text="Sing Up"
@@ -38,19 +39,15 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/tituloLoging"
-            android:layout_width="245dp"
-            android:layout_height="46dp"
-            android:fontFamily="@font/poppins_extrabold"
-            android:gravity="center"
-            android:text="Intuitivebnb"
-            android:textColor="#31ABFF"
-            android:textSize="34sp"
-            app:layout_constraintBottom_toTopOf="@+id/btnLogingPrincipal"
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/intuitivebnb"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.438" />
+            app:layout_constraintVertical_bias="0.23" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

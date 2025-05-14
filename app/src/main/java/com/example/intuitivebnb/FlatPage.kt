@@ -146,6 +146,9 @@ class FlatPage : Fragment() {
         if (isBooked) {
             button.setBackgroundColor(Color.GREEN)
             button.text = "Booked"
+        } else {
+            button.setBackgroundColor(Color.parseColor("#31ABFF"))
+            button.text = "Book"
         }
     }
 }

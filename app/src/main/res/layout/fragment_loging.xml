@@ -30,7 +30,7 @@
             android:layout_height="46dp"
             android:fontFamily="@font/poppins_extrabold"
             android:gravity="center"
-            android:text="Intuitivebnb"
+            android:text="Login"
             android:textColor="#31ABFF"
             android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="parent"

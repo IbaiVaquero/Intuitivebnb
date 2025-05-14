@@ -24,28 +24,12 @@
             app:layout_constraintHorizontal_bias="0.223"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.077" />
-
-        <TextView
-            android:id="@+id/titleFlatPage2"
-            android:layout_width="365dp"
-            android:layout_height="41dp"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/poppins_extrabold"
-            android:gravity="center"
-            android:text="Intuitivebnb"
-            android:textColor="#31ABFF"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/btnLogingPrincipal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.438" />
+            app:layout_constraintVertical_bias="0.117" />
 
         <LinearLayout
             android:id="@+id/flatReviews"
-            android:layout_width="411dp"
-            android:layout_height="630dp"
+            android:layout_width="415dp"
+            android:layout_height="603dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

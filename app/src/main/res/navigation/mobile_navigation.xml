@@ -3,23 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
+    android:label=" "
     app:startDestination="@+id/nav_home">
 
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.intuitivebnb.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label=""
         tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.intuitivebnb.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.intuitivebnb.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label=""
         tools:layout="@layout/fragment_slideshow" />
 </navigation>
