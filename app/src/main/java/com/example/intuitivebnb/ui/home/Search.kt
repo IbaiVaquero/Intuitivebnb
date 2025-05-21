@@ -1,10 +1,11 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.home
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.intuitivebnb.R
 
 
 class Search : Fragment() {

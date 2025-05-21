@@ -1,8 +1,11 @@
 package com.example.intuitivebnb
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.core.content.ContextCompat
@@ -14,6 +17,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.intuitivebnb.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.MemoryCacheSettings
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,9 +39,21 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
-        appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.nav_home, R.id.nav_slideshow), drawerLayout
-        )
+        val menu = navView.menu
+        val loggedUser = SessionManager.getLoggedInUser()
+        if (loggedUser == null) {
+            menu.findItem(R.id.nav_slideshow)?.isVisible = false
+        } else {
+            menu.findItem(R.id.nav_slideshow)?.isVisible = true
+        }
+
+        val topLevelDestinations = if (loggedUser != null) {
+            setOf(R.id.nav_home, R.id.nav_slideshow)
+        } else {
+            setOf(R.id.nav_home)
+        }
+        appBarConfiguration = AppBarConfiguration(topLevelDestinations, drawerLayout)
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
@@ -48,26 +66,54 @@ class MainActivity : AppCompatActivity() {
         }
         binding.appBarMain.toolbar.navigationIcon = drawerArrow
 
-        // First listener for handling the Drawer Arrow color update
         navController.addOnDestinationChangedListener { _, _, _ ->
             drawerArrow.color = ContextCompat.getColor(this, R.color.azul)
             binding.appBarMain.toolbar.navigationIcon = drawerArrow
         }
 
-        // Actualiza la visibilidad de la AppBar de acuerdo a la vista activa en el FrameLayout
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.frameLayoutContainer -> {
-                    // Ocultar la AppBar cuando estamos en el FrameLayout con el ID "frameLayoutContainer"
-                    binding.appBarMain.toolbar.visibility = View.GONE
-                }
-                else -> {
-                    // Mostrar la AppBar para otras vistas
-                    binding.appBarMain.toolbar.visibility = View.VISIBLE
-                }
-            }
+        if (SessionManager.isUserLoggedIn()) {
+            loadUserInfo()
         }
     }
+
+    fun loadUserInfo() {
+        val email = SessionManager.getLoggedInUser() ?: return
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("users")
+            .whereEqualTo("mail", email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val userDoc = documents.documents[0]
+                    val name = userDoc.getString("name")
+                    val imageUrl = userDoc.getString("image")
+
+                    val headerView = findViewById<com.google.android.material.navigation.NavigationView>(R.id.nav_view)
+                        .getHeaderView(0)
+
+                    val nameTextView = headerView.findViewById<TextView>(R.id.navName)
+                    val emailTextView = headerView.findViewById<TextView>(R.id.navMail)
+                    val imageView = headerView.findViewById<ImageView>(R.id.navImage)
+
+                    nameTextView.text = name
+                    emailTextView.text = email
+
+                    if (!imageUrl.isNullOrEmpty()) {
+                        com.squareup.picasso.Picasso.get()
+                            .load(imageUrl)
+                            .into(imageView)
+                    }
+
+                }
+
+            }
+            .addOnFailureListener {
+                it.printStackTrace()
+            }
+    }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)

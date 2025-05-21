@@ -1,4 +1,4 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.home
 
 import android.content.ContentValues.TAG
 import android.os.Bundle
@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.intuitivebnb.R
+import com.example.intuitivebnb.SessionManager
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
@@ -44,82 +46,55 @@ class FlatEdit : Fragment() {
 
 
         btnSave.setOnClickListener {
-            val title = editFlatTitle.text.toString()
-            val description = editFlatDescription.text.toString()
-            val location = editFlatLocation.text.toString()
-            val priceInput = editFlatPrice.text.toString()
-            val image = editFlatimage.text.toString()
+            val title = editFlatTitle.text.toString().trim()
+            val description = editFlatDescription.text.toString().trim()
+            val location = editFlatLocation.text.toString().trim()
+            val priceInput = editFlatPrice.text.toString().trim()
+            val image = editFlatimage.text.toString().trim()
 
-            // Validar título
-            if (title.length > 50) {
-                Toast.makeText(requireContext(), "El título no puede superar los 50 caracteres", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            // Validaciones básicas
+            if (!checks(title, description, location, priceInput, image)) return@setOnClickListener
 
-            // Validar formato de localización
+            // Parsear ubicación
             val parts = location.split(",")
-            if (parts.size != 2) {
-                Toast.makeText(requireContext(), "La localización debe tener formato 'longitud, latitud'", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            val longitude = parts[0].trim().toDouble()
+            val latitude = parts[1].trim().toDouble()
 
-            val longitude = parts[0].trim()
-            val latitude = parts[1].trim()
+            val formattedPrice = "${priceInput.toDouble()}€"
 
-            val lat = latitude.toDoubleOrNull()
-            val lon = longitude.toDoubleOrNull()
-
-            if (lat == null || lon == null || lat !in -90.0..90.0 || lon !in -180.0..180.0) {
-                Toast.makeText(requireContext(), "Latitud o longitud no válidas", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Validar URL de la imagen
-            val urlRegex = Regex("^https?://.*\\.(jpg|jpeg|png|gif|bmp)(\\?.*)?$", RegexOption.IGNORE_CASE)
-            if (!urlRegex.matches(image)) {
-                Toast.makeText(requireContext(), "La URL de la imagen no es válida", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Validar precio (debe ser número y no debe contener €)
-            if (priceInput.contains("€")) {
-                Toast.makeText(requireContext(), "No incluyas el símbolo € en el precio", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val priceNumber = priceInput.toDoubleOrNull()
-            if (priceNumber == null || priceNumber < 0) {
-                Toast.makeText(requireContext(), "Introduce un precio válido", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val formattedPrice = "${priceNumber}€"
+            val flat: HashMap<String, Any?> = hashMapOf(
+                "title" to title,
+                "description" to description,
+                "latitude" to latitude,
+                "longitude" to longitude,
+                "price" to formattedPrice,
+                "image" to image
+            )
 
             if (recivedTitle != null) {
-                val flat: HashMap<String, Any?> = hashMapOf(
-                    "title" to title,
-                    "description" to description,
-                    "latitude" to lat,
-                    "longitude" to lon,
-                    "price" to formattedPrice,
-                    "image" to image
-                )
                 editFlat(flat, recivedTitle)
-            }else{
-                val flat: HashMap<String, Any?> = hashMapOf(
-                    "booked" to false,
-                    "actualGuest" to "None",
-                    "host" to SessionManager.getLoggedInUser(),
-                    "title" to title,
-                    "description" to description,
-                    "latitude" to lat.toString(),
-                    "longitude" to lon.toString(),
-                    "price" to formattedPrice,
-                    "image" to image
-                )
-                newFlat(flat)
+            } else {
+                // Verificar que el título no esté en uso
+                db.collection("flats")
+                    .whereEqualTo("title", title)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        if (!documents.isEmpty) {
+                            Toast.makeText(requireContext(), "Ya existe un piso con ese título", Toast.LENGTH_SHORT).show()
+                        } else {
+                            flat["booked"] = false
+                            flat["actualGuest"] = "None"
+                            flat["host"] = SessionManager.getLoggedInUser()
+                            newFlat(flat)
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Error al verificar título", Toast.LENGTH_SHORT).show()
+                    }
             }
         }
+
+
 
         return view
     }
@@ -142,7 +117,9 @@ class FlatEdit : Fragment() {
                     val price = document.getString("price")?.replace("€", "")
                     editFlatTitle1.setText(recivedTitle)
                     editFlatDescription.setText(description)
-                    editFlatLocation.setText(document.getString("latitude") + "," + document.getString("longitude"))
+                    val latitude = document.getDouble("latitude")
+                    val longitude = document.getDouble("longitude")
+                    editFlatLocation.setText("$longitude, $latitude")
                     editFlatPrice.setText(price)
                     editFlatimage.setText(image)
                 }
@@ -199,6 +176,62 @@ class FlatEdit : Fragment() {
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error al buscar el documento", e)
             }
+    }
+
+    private fun checks(
+        title: String,
+        description: String,
+        location: String,
+        priceInput: String,
+        image: String
+    ): Boolean {
+        if (title.isEmpty()) {
+            Toast.makeText(requireContext(), "El título no puede estar vacío", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (title.length > 50) {
+            Toast.makeText(requireContext(), "El título no puede superar los 50 caracteres", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (description.isEmpty()) {
+            Toast.makeText(requireContext(), "La descripción no puede estar vacía", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val parts = location.split(",")
+        if (parts.size != 2) {
+            Toast.makeText(requireContext(), "La localización debe tener formato 'longitud, latitud'", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val lon = parts[0].trim().toDoubleOrNull()
+        val lat = parts[1].trim().toDoubleOrNull()
+
+        if (lat == null || lon == null || lat !in -90.0..90.0 || lon !in -180.0..180.0) {
+            Toast.makeText(requireContext(), "Latitud o longitud no válidas", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (priceInput.contains("€")) {
+            Toast.makeText(requireContext(), "No incluyas el símbolo € en el precio", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val priceNumber = priceInput.toDoubleOrNull()
+        if (priceNumber == null || priceNumber < 0) {
+            Toast.makeText(requireContext(), "Introduce un precio válido", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val urlRegex = Regex("^https?://.*\\.(jpg|jpeg|png|gif|bmp)(\\?.*)?$", RegexOption.IGNORE_CASE)
+        if (!urlRegex.matches(image)) {
+            Toast.makeText(requireContext(), "La URL de la imagen no es válida", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
     }
 
 

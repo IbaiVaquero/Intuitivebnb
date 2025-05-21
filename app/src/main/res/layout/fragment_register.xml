@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Loging">
+    tools:context=".ui.home.Loging">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -43,18 +43,34 @@
             android:id="@+id/editMailSignUp"
             android:layout_width="226dp"
             android:layout_height="34dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/edittext_border"
             android:ems="10"
             android:gravity="center"
             android:inputType="text"
-            android:text="Mail"
+            android:hint="Mail"
             app:layout_constraintBottom_toTopOf="@+id/editPasswordSignUp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editNameSignUp" />
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/editPasswordSignUp"
+            android:layout_width="226dp"
+            android:layout_height="34dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="text"
+            android:hint="Password"
+            app:layout_constraintBottom_toTopOf="@+id/editImageSignUp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/editImageSignUp"
             android:layout_width="226dp"
             android:layout_height="34dp"
             android:layout_marginBottom="32dp"
@@ -62,35 +78,39 @@
             android:ems="10"
             android:gravity="center"
             android:inputType="text"
-            android:text="Password"
+            android:hint="Image(URL)"
             app:layout_constraintBottom_toTopOf="@+id/cbRoleSignUp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/editNameSignUp"
             android:layout_width="226dp"
             android:layout_height="34dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/edittext_border"
             android:ems="10"
             android:gravity="center"
             android:inputType="text"
-            android:text="Name"
+            android:hint="Name"
+            app:layout_constraintBottom_toTopOf="@+id/editMailSignUp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintHorizontal_bias="0.502"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tituloSingUp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
         <Spinner
             android:id="@+id/cbRoleSignUp"
-            android:layout_width="225dp"
-            android:layout_height="30dp"
-            android:layout_marginBottom="80dp"
+            android:layout_width="229dp"
+            android:layout_height="31dp"
+            android:layout_marginBottom="28dp"
             android:background="@drawable/edittext_border"
             android:gravity="center"
             app:layout_constraintBottom_toTopOf="@+id/btnSignUp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.489"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

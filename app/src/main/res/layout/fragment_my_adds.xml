@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyAdds">
+    tools:context=".ui.home.MyAdds">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,17 +26,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.117" />
 
-        <LinearLayout
-            android:id="@+id/flatReviews"
+        <ScrollView
             android:layout_width="415dp"
-            android:layout_height="603dp"
-            android:orientation="vertical"
+            android:layout_height="677dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"></LinearLayout>
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="-2dp">
+
+            <LinearLayout
+                android:id="@+id/myAdds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

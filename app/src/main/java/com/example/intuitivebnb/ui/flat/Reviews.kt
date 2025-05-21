@@ -1,4 +1,4 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.flat
 
 import android.content.ContentValues.TAG
 import android.os.Bundle
@@ -12,7 +12,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.FragmentTransaction
+import com.example.intuitivebnb.R
+import com.example.intuitivebnb.SessionManager
+import com.example.intuitivebnb.ui.home.SearchMap
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -38,6 +40,8 @@ class Reviews : Fragment() {
         val rateEdit = view.findViewById<EditText>(R.id.editRate)
         val commentEdit = view.findViewById<EditText>(R.id.editComment)
         val btnAddReview = view.findViewById<Button>(R.id.btnAddReview)
+        rateEdit.filters = arrayOf(android.text.InputFilter.LengthFilter(2))
+
         btnAddReview.setOnClickListener {
             if (SessionManager.isUserLoggedIn()) {
                 val rate = rateEdit.text.toString().toDoubleOrNull()
@@ -45,6 +49,11 @@ class Reviews : Fragment() {
 
                 if (rate == null || comment.isBlank()) {
                     Toast.makeText(requireContext(), "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (rate < 0 || rate > 10) {
+                    Toast.makeText(requireContext(), "La valoración debe estar entre 0 y 10", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
@@ -60,11 +69,9 @@ class Reviews : Fragment() {
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Review añadida", Toast.LENGTH_SHORT).show()
 
-                        // Limpiar los campos
                         rateEdit.text.clear()
                         commentEdit.text.clear()
 
-                        // Recargar el fragmento Reviews con el mismo título
                         val newFragment = Reviews()
                         val args = Bundle()
                         args.putString("title", title)
@@ -82,6 +89,7 @@ class Reviews : Fragment() {
                 Toast.makeText(requireContext(), "Debes iniciar sesión para añadir una review", Toast.LENGTH_SHORT).show()
             }
         }
+
 
         btnBackReview.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchMap">
+    tools:context=".ui.home.SearchMap">
 
     <!-- Fragmento de Google Maps -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,12 +38,13 @@
 
         <ScrollView
             android:id="@+id/scrollContainer"
-            android:layout_width="413dp"
-            android:layout_height="430dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@+id/map"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout
                 android:id="@+id/addRows"

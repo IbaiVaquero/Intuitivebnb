@@ -1,4 +1,4 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.flat
 
 import android.graphics.Color
 import android.os.Bundle
@@ -9,6 +9,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.intuitivebnb.R
+import com.example.intuitivebnb.SessionManager
+import com.example.intuitivebnb.ui.profile.GuestProfile
+import com.example.intuitivebnb.ui.home.SearchMap
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 
@@ -39,10 +44,22 @@ class FlatPage : Fragment() {
         val btnFlatReviews = view.findViewById<Button>(R.id.btnReviews)
 
         btnBack.setOnClickListener {
+            val origin = arguments?.getString("origin")
+
+            val fragmentToReturn = when (origin) {
+                "guestProfile" -> GuestProfile()
+                "searchMap" -> SearchMap()
+                else -> null
+            }
+
+            if (fragmentToReturn != null) {
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.contenedor, SearchMap())
-                transaction.addToBackStack(null)
+                transaction.replace(R.id.contenedor, fragmentToReturn)
                 transaction.commit()
+            } else {
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+
         }
 
         db.collection("reviews")
@@ -68,6 +85,20 @@ class FlatPage : Fragment() {
                     val description = document.getString("description")
                     val price = document.getString("price")
                     isBooked = document.getBoolean("booked") ?: false
+                    val actualGuest = document.getString("actualGuest") ?: ""
+
+                    // Verificación de consistencia entre booked y actualGuest
+                    val needsCorrection = (isBooked && actualGuest.isBlank()) || (!isBooked && actualGuest.isNotBlank())
+                    if (needsCorrection) {
+                        val correctionData = mutableMapOf<String, Any>("booked" to isBooked)
+                        if (isBooked) {
+                            correctionData["actualGuest"] = SessionManager.getLoggedInUser() ?: ""
+                        } else {
+                            correctionData["actualGuest"] = FieldValue.delete()
+                        }
+
+                        db.collection("flats").document(flatId!!).update(correctionData)
+                    }
 
                     // Actualizar UI
                     titleflatPage.text = title
@@ -82,11 +113,9 @@ class FlatPage : Fragment() {
                 exception.printStackTrace()
             }
 
-
-
         btnBook.setOnClickListener {
             flatId?.let { id ->
-                isBooked = !isBooked // Alternar el estado
+                isBooked = !isBooked // Alternar estado
                 updateBookingStatus(id, isBooked)
                 updateButtonUI(btnBook, isBooked)
             }
@@ -94,7 +123,6 @@ class FlatPage : Fragment() {
 
         btnFlatReviews.setOnClickListener {
             val title = titleflatPage.text.toString()
-
             val bundle = Bundle()
             bundle.putString("title", title)
 
@@ -109,15 +137,14 @@ class FlatPage : Fragment() {
 
         btnImagesFlat.setOnClickListener {
             val title = titleflatPage.text.toString()
-
             val bundle = Bundle()
             bundle.putString("title", title)
 
-            val reviewsFragment = FlatImages()
-            reviewsFragment.arguments = bundle
+            val imagesFragment = FlatImages()
+            imagesFragment.arguments = bundle
 
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.contenedor, reviewsFragment)
+            transaction.replace(R.id.contenedor, imagesFragment)
             transaction.addToBackStack(null)
             transaction.commit()
         }
@@ -127,10 +154,16 @@ class FlatPage : Fragment() {
 
     private fun updateBookingStatus(flatId: String, isBooked: Boolean) {
         val loggedInUser = SessionManager.getLoggedInUser() ?: ""
+
         val updateData = mutableMapOf<String, Any>(
-            "booked" to isBooked,
-            "actualGuest" to loggedInUser
+            "booked" to isBooked
         )
+
+        if (isBooked) {
+            updateData["actualGuest"] = loggedInUser
+        } else {
+            updateData["actualGuest"] = FieldValue.delete()
+        }
 
         db.collection("flats").document(flatId)
             .update(updateData)

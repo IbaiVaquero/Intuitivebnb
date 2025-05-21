@@ -1,4 +1,4 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.home
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.intuitivebnb.R
+import com.example.intuitivebnb.SessionManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 
@@ -26,7 +29,7 @@ class MyAdds : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_adds, container, false)
-        myAdds = view.findViewById(R.id.flatReviews)
+        myAdds = view.findViewById(R.id.myAdds)
         val btnNewAdd: Button = view.findViewById(R.id.btnNewAdd)
         btnNewAdd.setOnClickListener{
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -54,7 +57,7 @@ class MyAdds : Fragment() {
                     val price = document.getString("price")
                     val calificacion = document.getDouble("calificacion")
 
-                    addFlat(inflater, title, image, name, price, calificacion)
+                    addFlat(inflater, title, image, name, price, calificacion, document.id)
                 }
             }
             .addOnFailureListener { it.printStackTrace() }
@@ -66,13 +69,26 @@ class MyAdds : Fragment() {
         image: String?,
         description: String?,
         price: String?,
-        calificacion: Double?
+        calificacion: Double?,
+        id: String
     ) {
         val flatView = inflater.inflate(R.layout.my_flat_view, myAdds, false)
         val titleTextView = flatView.findViewById<TextView>(R.id.myAddTitle)
         val priceTextView = flatView.findViewById<TextView>(R.id.myAddMoney)
         val imageImageView = flatView.findViewById<ImageView>(R.id.myAddImage)
-        val btnEditFlat = flatView.findViewById<Button>(R.id.btnEditFlat)
+        val btnEditFlat = flatView.findViewById<ImageButton>(R.id.btnEditFlat)
+        val btnDeleteFlat = flatView.findViewById<ImageButton>(R.id.btnDeleteFlat)
+
+        btnDeleteFlat.setOnClickListener {
+            db.collection("flats").document(id)
+                .delete()
+                .addOnSuccessListener {
+                    myAdds?.removeView(flatView)
+                }
+                .addOnFailureListener { e ->
+                    e.printStackTrace()
+                }
+        }
 
         btnEditFlat.setOnClickListener {
             val title = titleTextView.text.toString()

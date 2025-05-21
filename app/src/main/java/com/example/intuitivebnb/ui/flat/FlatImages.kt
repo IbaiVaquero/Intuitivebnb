@@ -1,4 +1,4 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.flat
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.intuitivebnb.R
+import com.example.intuitivebnb.ui.home.SearchMap
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 

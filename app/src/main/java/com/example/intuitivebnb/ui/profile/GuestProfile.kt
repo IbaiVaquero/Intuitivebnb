@@ -1,5 +1,6 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.intuitivebnb.ui.flat.FlatPage
+import com.example.intuitivebnb.MainActivity
+import com.example.intuitivebnb.R
+import com.example.intuitivebnb.SessionManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 
@@ -26,6 +31,15 @@ class GuestProfile : Fragment() {
         myBooks = view.findViewById(R.id.myBooks)
         val imageProfile = view.findViewById<ImageView>(R.id.imageGuestProfile)
         val textName = view.findViewById<TextView>(R.id.textNameGuestProfile)
+        val btnLogOut = view.findViewById<Button>(R.id.bntLogOutGuestProfile)
+
+        btnLogOut.setOnClickListener {
+            SessionManager.logout()
+            val intent = Intent(requireActivity(), MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            requireActivity().finish()
+        }
 
         loadProfile(imageProfile, textName)
         loadAdds(inflater)
@@ -102,11 +116,13 @@ class GuestProfile : Fragment() {
             .load(image)
             .into(imageImageView)
 
+
         btnEnterFlat.setOnClickListener {
             val flatTitle = titleTextView.text.toString()
             val flatFragment = FlatPage().apply {
                 arguments = Bundle().apply {
                     putString("title", flatTitle)
+                    putString("origin", "guestProfile")
                 }
             }
 

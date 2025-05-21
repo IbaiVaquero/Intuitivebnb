@@ -1,4 +1,4 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.home
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.example.intuitivebnb.ui.flat.FlatPage
+import com.example.intuitivebnb.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -65,7 +67,7 @@ class SearchMap : Fragment(), OnMapReadyCallback {
         addRows?.removeAllViews()
 
         db.collection("flats")
-            // .orderBy("calificacion", Query.Direction.DESCENDING)
+            .whereEqualTo("booked", false)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -76,7 +78,6 @@ class SearchMap : Fragment(), OnMapReadyCallback {
                     val calificacion = document.getDouble("calificacion")
                     val latitude = document.getDouble("latitude")
                     val longitude = document.getDouble("longitude")
-
 
                     addFlat(inflater, title, image, description, price, calificacion)
                     createMarker(latitude, longitude, title)
@@ -115,6 +116,7 @@ class SearchMap : Fragment(), OnMapReadyCallback {
 
             val bundle = Bundle()
             bundle.putString("title", title)
+            bundle.putString("origin", "searchMap")
             flatFragment.arguments = bundle
 
             val transaction = requireActivity().supportFragmentManager.beginTransaction()

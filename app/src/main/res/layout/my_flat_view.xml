@@ -8,37 +8,28 @@
 
     <!-- Imagen del anuncio -->
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="49dp"
+    <ImageButton
+        android:id="@+id/btnDeleteFlat"
+        android:layout_width="39dp"
         android:layout_height="39dp"
-        android:layout_marginBottom="4dp"
-        android:text="E"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/bin_xmark_fill_svgrepo_com"
+        android:contentDescription="Editar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.988"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnEditFlat"
-        android:layout_width="49dp"
+        android:layout_width="39dp"
         android:layout_height="39dp"
-        android:layout_marginBottom="4dp"
-        android:text="E"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/pencil_svgrepo_com"
+        android:contentDescription="Editar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.798"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="49dp"
-        android:layout_height="39dp"
-        android:layout_marginBottom="4dp"
-        android:text="E"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.603"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView

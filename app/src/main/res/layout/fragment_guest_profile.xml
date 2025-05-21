@@ -4,17 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HostProfile">
+    tools:context=".ui.profile.GuestProfile"
+    android:layout_marginTop="50dp"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <Button
             android:id="@+id/bntLogOutGuestProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
+            android:layout_marginStart="64dp"
             android:backgroundTint="#31ABFF"
             android:fontFamily="@font/poppins_semibold"
             android:text="Log Out"
@@ -24,13 +27,13 @@
             app:layout_constraintHorizontal_bias="0.223"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.245" />
+            app:layout_constraintVertical_bias="0.244" />
 
         <Button
             android:id="@+id/btnMyReviewsGuestProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="264dp"
+            android:layout_marginStart="240dp"
             android:backgroundTint="#31ABFF"
             android:fontFamily="@font/poppins_semibold"
             android:text="My Reviews"
@@ -40,7 +43,7 @@
             app:layout_constraintHorizontal_bias="0.223"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.245" />
+            app:layout_constraintVertical_bias="0.244" />
 
         <ImageView
             android:id="@+id/imageGuestProfile"
@@ -81,16 +84,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.33" />
 
-        <LinearLayout
-            android:id="@+id/myBooks"
-            android:layout_width="414dp"
-            android:layout_height="487dp"
-            android:orientation="vertical"
+        <ScrollView
+            android:layout_width="416dp"
+            android:layout_height="517dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"></LinearLayout>
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="-4dp">
+
+            <LinearLayout
+                android:id="@+id/myBooks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

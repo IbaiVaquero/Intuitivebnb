@@ -1,4 +1,4 @@
-package com.example.intuitivebnb
+package com.example.intuitivebnb.ui.home
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.intuitivebnb.R
+import com.example.intuitivebnb.SessionManager
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -42,37 +44,24 @@ class Loging : Fragment() {
                             if (role != null) {
                                 SessionManager.login(mailLogin, role)
 
-                                Toast.makeText(requireContext(), "Login exitoso!", Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(requireContext(), "Login exitoso!", Toast.LENGTH_SHORT).show()
+                                val intent = requireActivity().intent
+                                intent.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP or android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                                requireActivity().startActivity(intent)
+                                requireActivity().finish()
 
-                                if (role == "Guest") {
-                                    val transaction =
-                                        requireActivity().supportFragmentManager.beginTransaction()
-                                    transaction.replace(R.id.contenedor, SearchMap())
-                                    transaction.commit()
-                                } else if (role == "Host") {
-                                    val transaction =
-                                        requireActivity().supportFragmentManager.beginTransaction()
-                                    transaction.replace(R.id.contenedor, MyAdds())
-                                    transaction.commit()
-                                }
                             } else {
                                 Toast.makeText(requireContext(), "Error al obtener rol", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Usuario o contraseña incorrecta",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), "Usuario o contraseña incorrecta", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
                 Toast.makeText(requireContext(), "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show()
             }
         }
-
 
         return view
     }

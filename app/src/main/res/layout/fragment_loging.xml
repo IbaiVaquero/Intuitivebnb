@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Loging">
+    tools:context=".ui.home.Loging">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,8 +26,8 @@
 
         <TextView
             android:id="@+id/tituloLoging"
-            android:layout_width="245dp"
-            android:layout_height="46dp"
+            android:layout_width="249dp"
+            android:layout_height="54dp"
             android:fontFamily="@font/poppins_extrabold"
             android:gravity="center"
             android:text="Login"
@@ -47,7 +47,7 @@
             android:ems="10"
             android:gravity="center"
             android:inputType="text"
-            android:text="Password"
+            android:hint="Password"
             app:layout_constraintBottom_toTopOf="@+id/btnLoging"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +63,7 @@
             android:ems="10"
             android:gravity="center"
             android:inputType="text"
-            android:text="Mail"
+            android:hint="Mail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
