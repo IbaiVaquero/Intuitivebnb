@@ -18,48 +18,56 @@ import com.google.firebase.firestore.firestore
 val db = Firebase.firestore
 
 class FlatEdit : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_flat_edit, container, false)
 
         val editFlatTitle: EditText = view.findViewById(R.id.editAddTitle)
         val editFlatDescription: EditText = view.findViewById(R.id.editFlatDescription)
         val editFlatLocation: EditText = view.findViewById(R.id.editFlatLocation)
         val editFlatPrice: EditText = view.findViewById(R.id.editFlatPrice)
-        val editFlatimage: EditText = view.findViewById(R.id.editFlatImage)
+        val editFlatImage: EditText = view.findViewById(R.id.editFlatImage)
         val btnSave: Button = view.findViewById(R.id.btnSave)
         val btnAddImages: Button = view.findViewById(R.id.btnAddImages)
 
-        // Obtener los argumentos del Fragmento
-        val recivedTitle = arguments?.getString("title")
+        val receivedTitle = arguments?.getString("title")
 
-        if (recivedTitle != null) {
-            cargarDatos(recivedTitle, editFlatTitle, editFlatDescription, editFlatLocation, editFlatPrice, editFlatimage)
+        if (receivedTitle != null) {
+            cargarDatos(receivedTitle, editFlatTitle, editFlatDescription, editFlatLocation, editFlatPrice, editFlatImage)
         }
 
+        btnAddImages.setOnClickListener {
+            val title = editFlatTitle.text.toString().trim()
+            if (title.isEmpty()) {
+                Toast.makeText(requireContext(), "Primero introduce un título", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val bundle = Bundle().apply { putString("flatTitle", title) }
+            val fragment = addImages()
+            fragment.arguments = bundle
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.contenedor, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
 
         btnSave.setOnClickListener {
             val title = editFlatTitle.text.toString().trim()
             val description = editFlatDescription.text.toString().trim()
             val location = editFlatLocation.text.toString().trim()
             val priceInput = editFlatPrice.text.toString().trim()
-            val image = editFlatimage.text.toString().trim()
+            val image = editFlatImage.text.toString().trim()
 
-            // Validaciones básicas
             if (!checks(title, description, location, priceInput, image)) return@setOnClickListener
 
-            // Parsear ubicación
-            val parts = location.split(",")
-            val longitude = parts[0].trim().toDouble()
-            val latitude = parts[1].trim().toDouble()
-
+            val (lonStr, latStr) = location.split(",").map { it.trim() }
+            val longitude = lonStr.toDouble()
+            val latitude = latStr.toDouble()
             val formattedPrice = "${priceInput.toDouble()}€"
 
             val flat: HashMap<String, Any?> = hashMapOf(
@@ -68,13 +76,12 @@ class FlatEdit : Fragment() {
                 "latitude" to latitude,
                 "longitude" to longitude,
                 "price" to formattedPrice,
-                "image" to image
+                "image" to listOf(image) // siempre array con la imagen principal
             )
 
-            if (recivedTitle != null) {
-                editFlat(flat, recivedTitle)
+            if (receivedTitle != null) {
+                editFlat(flat, receivedTitle)
             } else {
-                // Verificar que el título no esté en uso
                 db.collection("flats")
                     .whereEqualTo("title", title)
                     .get()
@@ -94,98 +101,86 @@ class FlatEdit : Fragment() {
             }
         }
 
-
-
         return view
     }
 
     private fun cargarDatos(
-        recivedTitle: String?,
-        editFlatTitle1: EditText,
-        editFlatDescription: EditText,
-        editFlatLocation: EditText,
-        editFlatPrice: EditText,
-        editFlatimage: EditText
+        receivedTitle: String,
+        editTitle: EditText,
+        editDescription: EditText,
+        editLocation: EditText,
+        editPrice: EditText,
+        editImage: EditText
     ) {
         db.collection("flats")
-            .whereEqualTo("title", recivedTitle)
+            .whereEqualTo("title", receivedTitle)
             .get()
             .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val image = document.getString("image")
-                    val description = document.getString("actualGuest")
-                    val price = document.getString("price")?.replace("€", "")
-                    editFlatTitle1.setText(recivedTitle)
-                    editFlatDescription.setText(description)
-                    val latitude = document.getDouble("latitude")
-                    val longitude = document.getDouble("longitude")
-                    editFlatLocation.setText("$longitude, $latitude")
-                    editFlatPrice.setText(price)
-                    editFlatimage.setText(image)
-                }
+                val doc = documents.firstOrNull() ?: return@addOnSuccessListener
+                val images = doc.get("image") as? List<String>
+                val mainImage = images?.firstOrNull() ?: ""
+                val description = doc.getString("description")
+                val price = doc.getString("price")?.replace("€", "")
+                val latitude = doc.getDouble("latitude")
+                val longitude = doc.getDouble("longitude")
+
+                editTitle.setText(receivedTitle)
+                editDescription.setText(description)
+                editLocation.setText("$longitude, $latitude")
+                editPrice.setText(price)
+                editImage.setText(mainImage)
             }
             .addOnFailureListener { it.printStackTrace() }
     }
 
-    fun newFlat(flat: HashMap<String, Any?>) {
+    private fun newFlat(flat: HashMap<String, Any?>) {
         db.collection("flats")
             .add(flat)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.contenedor, MyAdds())
-                transaction.commit()
+            .addOnSuccessListener {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.contenedor, MyAdds())
+                    .commit()
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)
             }
     }
-    fun editFlat(flat: HashMap<String, Any?>, recivedTitle: String) {
-        // Buscar el documento por el título
+
+    private fun editFlat(flat: HashMap<String, Any?>, receivedTitle: String) {
         db.collection("flats")
-            .whereEqualTo("title", recivedTitle)  // Filtramos por título
-            .get()  // Obtenemos los documentos
+            .whereEqualTo("title", receivedTitle)
+            .get()
             .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    // Si encontramos al menos un documento con ese título
-                    val document = querySnapshot.documents[0]  // Tomamos el primer documento
-                    val documentId = document.id  // Obtenemos el ID del documento
+                val doc = querySnapshot.documents.firstOrNull()
+                if (doc != null) {
+                    val existingImages = doc.get("image") as? List<String> ?: emptyList()
+                    val newMainImage = (flat["image"] as List<*>).firstOrNull() as? String ?: ""
+                    val updatedImages = listOf(newMainImage) + existingImages.filter { it != newMainImage }
 
-                    // Convertir el HashMap<String, String> a Map<String, Any>
-                    val updatedFlatMap: Map<String, Any> = flat.mapValues { it.value as Any }
+                    flat["image"] = updatedImages
 
-                    // Ahora actualizamos el documento con el ID obtenido
                     db.collection("flats")
-                        .document(documentId)  // Accedemos al documento por su ID
-                        .update(updatedFlatMap)  // Actualizamos los campos con el Map<String, Any>
-
+                        .document(doc.id)
+                        .update(flat as Map<String, Any>)
                         .addOnSuccessListener {
-                            Log.d(TAG, "Documento actualizado con ID: $documentId")
-                            // Transacción para navegar al fragmento de mis anuncios
-                            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                            transaction.replace(R.id.contenedor, MyAdds())  // Cambiar a la pantalla de mis anuncios
-                            transaction.commit()
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.contenedor, MyAdds())
+                                .commit()
                         }
-                        .addOnFailureListener { e ->
-                            Log.w(TAG, "Error al actualizar el documento", e)
+                        .addOnFailureListener {
+                            Log.w(TAG, "Error al actualizar el documento", it)
                         }
                 } else {
-                    Log.w(TAG, "No se encontró un documento con el título: $recivedTitle")
+                    Log.w(TAG, "No se encontró un documento con el título: $receivedTitle")
                 }
             }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error al buscar el documento", e)
+            .addOnFailureListener {
+                Log.w(TAG, "Error al buscar el documento", it)
             }
     }
 
-    private fun checks(
-        title: String,
-        description: String,
-        location: String,
-        priceInput: String,
-        image: String
-    ): Boolean {
-        if (title.isEmpty()) {
+    private fun checks(title: String, description: String, location: String, priceInput: String, image: String): Boolean {
+        if (title.isBlank()) {
             Toast.makeText(requireContext(), "El título no puede estar vacío", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -195,7 +190,7 @@ class FlatEdit : Fragment() {
             return false
         }
 
-        if (description.isEmpty()) {
+        if (description.isBlank()) {
             Toast.makeText(requireContext(), "La descripción no puede estar vacía", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -208,13 +203,12 @@ class FlatEdit : Fragment() {
 
         val lon = parts[0].trim().toDoubleOrNull()
         val lat = parts[1].trim().toDoubleOrNull()
-
-        if (lat == null || lon == null || lat !in -90.0..90.0 || lon !in -180.0..180.0) {
+        if (lon == null || lat == null || lat !in -90.0..90.0 || lon !in -180.0..180.0) {
             Toast.makeText(requireContext(), "Latitud o longitud no válidas", Toast.LENGTH_SHORT).show()
             return false
         }
 
-        if (priceInput.contains("€")) {
+        if ("€" in priceInput) {
             Toast.makeText(requireContext(), "No incluyas el símbolo € en el precio", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -233,10 +227,4 @@ class FlatEdit : Fragment() {
 
         return true
     }
-
-
-
 }
-
-
-

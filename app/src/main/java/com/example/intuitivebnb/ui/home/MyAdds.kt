@@ -15,31 +15,36 @@ import com.example.intuitivebnb.SessionManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 
-
 class MyAdds : Fragment() {
     private var myAdds: LinearLayout? = null
     private val db = FirebaseFirestore.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
+    // Infla el layout y configura el botón para crear un nuevo anuncio
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_adds, container, false)
         myAdds = view.findViewById(R.id.myAdds)
+
         val btnNewAdd: Button = view.findViewById(R.id.btnNewAdd)
         btnNewAdd.setOnClickListener{
+            // Navega al fragmento para editar o crear un nuevo anuncio
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.contenedor, FlatEdit())
             transaction.commit()
         }
+
+        // Carga y muestra los anuncios del usuario
         loadAdds(inflater)
         return view
     }
 
+    // Obtiene los anuncios del usuario logueado y los muestra en el layout
     private fun loadAdds(inflater: LayoutInflater) {
         myAdds?.removeAllViews()
 
@@ -52,7 +57,8 @@ class MyAdds : Fragment() {
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val title = document.getString("title")
-                    val image = document.getString("image")
+                    val images = document.get("image") as? List<String>
+                    val image = images?.getOrNull(0)
                     val name = document.getString("actualGuest")
                     val price = document.getString("price")
                     val calificacion = document.getDouble("calificacion")
@@ -63,6 +69,7 @@ class MyAdds : Fragment() {
             .addOnFailureListener { it.printStackTrace() }
     }
 
+    // Crea la vista de cada anuncio con sus datos y configura los botones editar y eliminar
     private fun addFlat(
         inflater: LayoutInflater,
         title: String?,
@@ -73,12 +80,14 @@ class MyAdds : Fragment() {
         id: String
     ) {
         val flatView = inflater.inflate(R.layout.my_flat_view, myAdds, false)
+
         val titleTextView = flatView.findViewById<TextView>(R.id.myAddTitle)
         val priceTextView = flatView.findViewById<TextView>(R.id.myAddMoney)
         val imageImageView = flatView.findViewById<ImageView>(R.id.myAddImage)
         val btnEditFlat = flatView.findViewById<ImageButton>(R.id.btnEditFlat)
         val btnDeleteFlat = flatView.findViewById<ImageButton>(R.id.btnDeleteFlat)
 
+        // Elimina el anuncio de Firestore y lo remueve de la vista
         btnDeleteFlat.setOnClickListener {
             db.collection("flats").document(id)
                 .delete()
@@ -90,32 +99,31 @@ class MyAdds : Fragment() {
                 }
         }
 
+        // Navega al fragmento de edición del anuncio con el título pasado como argumento
         btnEditFlat.setOnClickListener {
             val title = titleTextView.text.toString()
-
             val flatFragment = FlatEdit()
-
             val bundle = Bundle()
             bundle.putString("title", title)
             flatFragment.arguments = bundle
 
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.contenedor, flatFragment)
-            transaction.addToBackStack(null)  // Esto permite volver a la pantalla anterior
+            transaction.addToBackStack(null)  // Permite volver atrás
             transaction.commit()
 
             myAdds?.removeAllViews()
         }
 
+        // Asigna los datos a las vistas correspondientes
         titleTextView.text = title
         priceTextView.text = price
 
+        // Carga la imagen usando Picasso
         Picasso.get()
             .load(image)
             .into(imageImageView)
 
-
         myAdds?.addView(flatView)
     }
-
 }

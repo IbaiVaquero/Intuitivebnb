@@ -22,7 +22,6 @@
             android:text="Log Out"
             app:cornerRadius="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnReviews"
             app:layout_constraintHorizontal_bias="0.223"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -69,9 +68,9 @@
             android:layout_width="411dp"
             android:layout_height="457dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
             app:layout_constraintVertical_bias="1.0"
-            tools:layout_editor_absoluteX="-1dp">
+            tools:layout_editor_absoluteX="0dp">
 
             <LinearLayout
                 android:id="@+id/activeBooks"

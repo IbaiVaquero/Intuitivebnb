@@ -20,7 +20,6 @@
             android:text="Intuitivebnb"
             android:textColor="#31ABFF"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/btnLogingPrincipal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

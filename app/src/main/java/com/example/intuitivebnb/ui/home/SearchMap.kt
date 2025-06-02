@@ -24,9 +24,9 @@ class SearchMap : Fragment(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private var addRows: LinearLayout? = null
-
     private val db = FirebaseFirestore.getInstance()
 
+    // Infla el layout y obtiene la referencia al contenedor de anuncios
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,23 +36,22 @@ class SearchMap : Fragment(), OnMapReadyCallback {
         return view
     }
 
+    // Inicializa el mapa cuando la vista está creada
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Inicializar el mapa
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
+    // Configura el mapa una vez está listo, centra la cámara y carga contenido
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-
         val coordenada = LatLng(40.343568, -3.716361)
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordenada, 4f), 4000, null)
-
         cargarContenido(layoutInflater)
     }
 
+    // Crea un marcador en el mapa si las coordenadas son válidas
     private fun createMarker(latitude: Double?, longitude: Double?, title: String?) {
         if (latitude != null && longitude != null) {
             val coordenada = LatLng(latitude, longitude)
@@ -63,16 +62,17 @@ class SearchMap : Fragment(), OnMapReadyCallback {
         }
     }
 
+    // Carga los flats no reservados desde Firestore y los muestra con marcador
     private fun cargarContenido(inflater: LayoutInflater) {
         addRows?.removeAllViews()
-
         db.collection("flats")
             .whereEqualTo("booked", false)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val title = document.getString("title")
-                    val image = document.getString("image")
+                    val images = document.get("image") as? List<String>
+                    val image = images?.getOrNull(0)
                     val description = document.getString("description")
                     val price = document.getString("price")
                     val calificacion = document.getDouble("calificacion")
@@ -88,6 +88,7 @@ class SearchMap : Fragment(), OnMapReadyCallback {
             }
     }
 
+    // Crea la vista para un flat y configura el botón para abrir la página del flat
     private fun addFlat(
         inflater: LayoutInflater,
         title: String?,

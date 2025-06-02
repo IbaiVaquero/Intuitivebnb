@@ -30,9 +30,11 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/myAddPrice"
         app:layout_constraintStart_toEndOf="@id/myAddImage"
-        app:layout_constraintTop_toTopOf="@id/myAddImage" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Precio -->
+
+    <!-- Descripción -->
     <TextView
         android:id="@+id/myAddPrice"
         android:layout_width="wrap_content"
@@ -43,9 +45,8 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/myAddTitle" />
+        tools:layout_editor_absoluteY="1dp" />
 
-    <!-- Descripción -->
     <TextView
         android:id="@+id/myAddDescription"
         android:layout_width="284dp"
@@ -56,6 +57,7 @@
         android:paddingEnd="12dp"
         android:text="Descripción breve del anuncio."
         android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/myAddImage"
         app:layout_constraintTop_toBottomOf="@id/myAddTitle" />
@@ -67,7 +69,7 @@
         android:background="@android:color/transparent"
         android:clickable="true"
         android:focusable="false"
-        tools:layout_editor_absoluteX="-50dp"
-        tools:layout_editor_absoluteY="-45dp" />
+        tools:layout_editor_absoluteX="-38dp"
+        tools:layout_editor_absoluteY="-47dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

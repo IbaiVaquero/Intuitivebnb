@@ -16,13 +16,12 @@ import com.example.intuitivebnb.SessionManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 
-//inflater.inflate(R.layout.fragment_host_profile, container, false)
-
 class HostProfile : Fragment() {
 
     private var activeBooks: LinearLayout? = null
     private val db = FirebaseFirestore.getInstance()
 
+    // Infla el layout y configura la vista con perfil y reservas activas
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,6 +33,7 @@ class HostProfile : Fragment() {
         val textName = view.findViewById<TextView>(R.id.textNameHostProfile)
         val btnLogOut = view.findViewById<Button>(R.id.bntLogOutHostProfile)
 
+        // Cierra sesión y vuelve a MainActivity
         btnLogOut.setOnClickListener {
             SessionManager.logout()
             val intent = Intent(requireActivity(), MainActivity::class.java)
@@ -48,6 +48,7 @@ class HostProfile : Fragment() {
         return view
     }
 
+    // Carga datos del perfil del host desde Firestore
     private fun loadProfile(imageProfile: ImageView, textName: TextView) {
         val email = SessionManager.getLoggedInUser()
         if (email == null) return
@@ -71,6 +72,7 @@ class HostProfile : Fragment() {
             .addOnFailureListener { it.printStackTrace() }
     }
 
+    // Carga flats activos reservados del host y los muestra en la interfaz
     private fun loadAdds(inflater: LayoutInflater) {
         activeBooks?.removeAllViews()
 
@@ -84,7 +86,8 @@ class HostProfile : Fragment() {
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val title = document.getString("title")
-                    val image = document.getString("image")
+                    val images = document.get("image") as? List<String>
+                    val image = images?.getOrNull(0)
                     val description = document.getString("description")
                     val price = document.getString("price")
                     val calificacion = document.getDouble("calificacion")
@@ -95,6 +98,7 @@ class HostProfile : Fragment() {
             .addOnFailureListener { it.printStackTrace() }
     }
 
+    // Crea la vista para un flat reservado y la añade a la lista de reservas activas
     private fun addFlat(
         inflater: LayoutInflater,
         title: String?,
@@ -108,7 +112,6 @@ class HostProfile : Fragment() {
         val descriptionTextView = flatView.findViewById<TextView>(R.id.myAddDescription)
         val priceTextView = flatView.findViewById<TextView>(R.id.myAddPrice)
         val imageImageView = flatView.findViewById<ImageView>(R.id.myAddImage)
-        val btnEnterFlat = flatView.findViewById<Button>(R.id.btnEnterBookedFlat)
 
         titleTextView.text = title
         descriptionTextView.text = description
@@ -117,7 +120,6 @@ class HostProfile : Fragment() {
         Picasso.get()
             .load(image)
             .into(imageImageView)
-
 
         activeBooks?.addView(flatView)
     }

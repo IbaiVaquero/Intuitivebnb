@@ -1,9 +1,7 @@
 package com.example.intuitivebnb
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,8 +16,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.intuitivebnb.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.MemoryCacheSettings
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var drawerArrow: DrawerArrowDrawable
 
+    // Configura la actividad principal con Navigation Drawer y NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
+        // Oculta o muestra la opción "Perfil" según si el usuario está logueado
         val menu = navView.menu
         val loggedUser = SessionManager.getLoggedInUser()
         if (loggedUser == null) {
@@ -47,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             menu.findItem(R.id.nav_slideshow)?.isVisible = true
         }
 
+        // Define destinos top-level según estado del usuario
         val topLevelDestinations = if (loggedUser != null) {
             setOf(R.id.nav_home, R.id.nav_slideshow)
         } else {
@@ -57,10 +56,10 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // Set text color of the toolbar title
+        // Establece el color del título de la toolbar
         binding.appBarMain.toolbar.setTitleTextColor(getColor(R.color.azul))
 
-        // Create and set the DrawerArrowDrawable with your custom color
+        // Configura el icono del drawer con color personalizado
         drawerArrow = DrawerArrowDrawable(this).apply {
             color = ContextCompat.getColor(this@MainActivity, R.color.azul)
         }
@@ -71,11 +70,13 @@ class MainActivity : AppCompatActivity() {
             binding.appBarMain.toolbar.navigationIcon = drawerArrow
         }
 
+        // Carga la información del usuario en el header del drawer si está logueado
         if (SessionManager.isUserLoggedIn()) {
             loadUserInfo()
         }
     }
 
+    // Obtiene datos del usuario desde Firestore y los muestra en el header del Navigation Drawer
     fun loadUserInfo() {
         val email = SessionManager.getLoggedInUser() ?: return
         val db = FirebaseFirestore.getInstance()
@@ -89,8 +90,7 @@ class MainActivity : AppCompatActivity() {
                     val name = userDoc.getString("name")
                     val imageUrl = userDoc.getString("image")
 
-                    val headerView = findViewById<com.google.android.material.navigation.NavigationView>(R.id.nav_view)
-                        .getHeaderView(0)
+                    val headerView = findViewById<NavigationView>(R.id.nav_view).getHeaderView(0)
 
                     val nameTextView = headerView.findViewById<TextView>(R.id.navName)
                     val emailTextView = headerView.findViewById<TextView>(R.id.navMail)
@@ -104,25 +104,22 @@ class MainActivity : AppCompatActivity() {
                             .load(imageUrl)
                             .into(imageView)
                     }
-
                 }
-
             }
             .addOnFailureListener {
                 it.printStackTrace()
             }
     }
 
-
-
+    // Infla el menú principal (opciones de toolbar)
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
+    // Maneja la navegación "Up" en la toolbar con NavController
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }
-

@@ -12,24 +12,26 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import com.example.intuitivebnb.R
 import com.example.intuitivebnb.SessionManager
 import com.example.intuitivebnb.ui.home.SearchMap
 import com.google.firebase.firestore.FirebaseFirestore
 
-
 class Reviews : Fragment() {
     private var faltReviews: LinearLayout? = null
     private val db = FirebaseFirestore.getInstance()
-    private var title: String? = null  // Aquí guardaremos el 'title'
+    private var title: String? = null
 
+    // Recupera el título del piso desde los argumentos del fragmento
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            title = it.getString("title")  // Recuperamos 'title' desde los argumentos
+            title = it.getString("title")
         }
     }
 
+    // Infla el layout del fragmento, gestiona el envío y visualización de reviews
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,6 +44,7 @@ class Reviews : Fragment() {
         val btnAddReview = view.findViewById<Button>(R.id.btnAddReview)
         rateEdit.filters = arrayOf(android.text.InputFilter.LengthFilter(2))
 
+        // Maneja el envío de una nueva review a Firestore
         btnAddReview.setOnClickListener {
             if (SessionManager.isUserLoggedIn()) {
                 val rate = rateEdit.text.toString().toDoubleOrNull()
@@ -90,17 +93,29 @@ class Reviews : Fragment() {
             }
         }
 
-
+        // Vuelve al fragmento de búsqueda de pisos
         btnBackReview.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.contenedor, SearchMap()) // Reemplazar el fragmento actual con SearchMap
-            transaction.addToBackStack(null) // Añadir a la pila de retroceso si deseas poder volver al fragmento anterior
-            transaction.commit() // Confirmar la transacción
+            transaction.replace(R.id.contenedor, SearchMap())
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
+
         loadReviews(inflater)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.contenedor, SearchMap())
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+        })
+
         return view
     }
 
+    // Carga todas las reviews del piso desde Firestore
     private fun loadReviews(inflater: LayoutInflater) {
         faltReviews?.removeAllViews()
         title?.let { title ->
@@ -120,6 +135,7 @@ class Reviews : Fragment() {
         }
     }
 
+    // Añade una review a la vista del layout
     private fun addReview(
         mail: String?,
         rate: Double?,
@@ -131,13 +147,10 @@ class Reviews : Fragment() {
         val commentReview = flatView.findViewById<TextView>(R.id.commentReview)
         val rateReview = flatView.findViewById<TextView>(R.id.rateReview)
 
-
         userMailReview.text = mail
         commentReview.text = comment
         rateReview.text = rate.toString()
 
         faltReviews?.addView(flatView)
     }
-
-
 }

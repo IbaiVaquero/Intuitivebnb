@@ -22,6 +22,7 @@ class GuestProfile : Fragment() {
     private var myBooks: LinearLayout? = null
     private val db = FirebaseFirestore.getInstance()
 
+    // Infla el layout y configura la vista con perfil y reservas
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,6 +34,7 @@ class GuestProfile : Fragment() {
         val textName = view.findViewById<TextView>(R.id.textNameGuestProfile)
         val btnLogOut = view.findViewById<Button>(R.id.bntLogOutGuestProfile)
 
+        // Cierra sesión y regresa a MainActivity
         btnLogOut.setOnClickListener {
             SessionManager.logout()
             val intent = Intent(requireActivity(), MainActivity::class.java)
@@ -47,6 +49,7 @@ class GuestProfile : Fragment() {
         return view
     }
 
+    // Carga datos del perfil del usuario logueado desde Firestore
     private fun loadProfile(imageProfile: ImageView, textName: TextView) {
         val email = SessionManager.getLoggedInUser()
         if (email == null) return
@@ -70,6 +73,7 @@ class GuestProfile : Fragment() {
             .addOnFailureListener { it.printStackTrace() }
     }
 
+    // Carga las reservas (flats) del usuario actual y las muestra en la interfaz
     private fun loadAdds(inflater: LayoutInflater) {
         myBooks?.removeAllViews()
 
@@ -82,7 +86,8 @@ class GuestProfile : Fragment() {
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val title = document.getString("title")
-                    val image = document.getString("image")
+                    val images = document.get("image") as? List<String>
+                    val image = images?.getOrNull(0)
                     val description = document.getString("description")
                     val price = document.getString("price")
                     val calificacion = document.getDouble("calificacion")
@@ -93,6 +98,7 @@ class GuestProfile : Fragment() {
             .addOnFailureListener { it.printStackTrace() }
     }
 
+    // Crea la vista de un flat reservado y configura el botón para abrir la página del flat
     private fun addFlat(
         inflater: LayoutInflater,
         title: String?,
@@ -115,7 +121,6 @@ class GuestProfile : Fragment() {
         Picasso.get()
             .load(image)
             .into(imageImageView)
-
 
         btnEnterFlat.setOnClickListener {
             val flatTitle = titleTextView.text.toString()

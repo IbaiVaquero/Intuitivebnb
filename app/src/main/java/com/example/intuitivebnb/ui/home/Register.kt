@@ -13,9 +13,11 @@ import com.example.intuitivebnb.R
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
+
 class Register : Fragment() {
     private val db = Firebase.firestore
 
+    // Infla el layout y configura el spinner y el botón de registro
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,6 +31,7 @@ class Register : Fragment() {
         val nameRegisterText: EditText = view.findViewById(R.id.editNameSignUp)
         val imageRegisterText: EditText = view.findViewById(R.id.editImageSignUp)
 
+        // Configura el spinner con opciones desde resources
         val adapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.opciones,
@@ -37,6 +40,7 @@ class Register : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
+        // Muestra un toast con la opción seleccionada del spinner
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val opcionSeleccionada = parent?.getItemAtPosition(position).toString()
@@ -46,6 +50,7 @@ class Register : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+        // Maneja el evento click del botón registrar
         buttonRegister.setOnClickListener {
             val nameRegister = nameRegisterText.text.toString().trim()
             val passwordRegister = passwordRegisterText.text.toString().trim()
@@ -53,9 +58,11 @@ class Register : Fragment() {
             val imageRegister = imageRegisterText.text.toString().trim()
             val selectedRole = spinner.selectedItem.toString()
 
+            // URL por defecto si el usuario no añade imagen
             val defaultImageUrl = "https://cdn-icons-png.flaticon.com/512/9131/9131529.png"
             val finalImageUrl = if (imageRegister.isEmpty()) defaultImageUrl else imageRegister
 
+            // Validaciones básicas de campos
             if (nameRegister.isEmpty() || passwordRegister.isEmpty() || mailRegister.isEmpty()) {
                 Toast.makeText(requireContext(), "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -70,7 +77,7 @@ class Register : Fragment() {
                 Toast.makeText(requireContext(), "Introduce un email válido", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            // Verifica que el email no esté registrado antes de añadir nuevo usuario
             db.collection("users")
                 .whereEqualTo("mail", mailRegister)
                 .get()
@@ -85,6 +92,7 @@ class Register : Fragment() {
                             "role" to selectedRole,
                             "image" to finalImageUrl
                         )
+                        // Añade el nuevo usuario a Firestore
 
                         db.collection("users")
                             .add(user)

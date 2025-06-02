@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import com.example.intuitivebnb.R
 import com.example.intuitivebnb.SessionManager
 import com.example.intuitivebnb.ui.profile.GuestProfile
@@ -21,13 +22,17 @@ class FlatPage : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private var title: String? = null
     private var flatId: String? = null
-    private var isBooked: Boolean = false  // Estado de reserva
+    private var isBooked: Boolean = false
 
+    // Recupera el título del piso desde los argumentos del fragmento
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = arguments?.getString("title")
     }
 
+    // Infla el layout del fragmento, carga los datos del piso y configura los botones
+    // Configura los elementos de la UI y carga información del piso y sus valoraciones
+    // También gestiona navegación hacia atrás, galería de imágenes y valoraciones
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,9 +71,22 @@ class FlatPage : Fragment() {
             .whereEqualTo("flatName", title)
             .get()
             .addOnSuccessListener { documents ->
+                var totalRate = 0.0
+                var count = 0
+
                 for (document in documents) {
                     val rate = document.getDouble("rate")
-                    textAssessment.text = rate.toString()
+                    if (rate != null) {
+                        totalRate += rate
+                        count++
+                    }
+                }
+
+                if (count > 0) {
+                    val averageRate = totalRate / count
+                    textAssessment.text = averageRate.toString()
+                } else {
+                    textAssessment.text = ""
                 }
             }
             .addOnFailureListener { exception ->
@@ -81,13 +99,13 @@ class FlatPage : Fragment() {
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     flatId = document.id
-                    val image = document.getString("image")
+                    val images = document.get("image") as? List<String>
+                    val image = images?.getOrNull(0)
                     val description = document.getString("description")
                     val price = document.getString("price")
                     isBooked = document.getBoolean("booked") ?: false
                     val actualGuest = document.getString("actualGuest") ?: ""
 
-                    // Verificación de consistencia entre booked y actualGuest
                     val needsCorrection = (isBooked && actualGuest.isBlank()) || (!isBooked && actualGuest.isNotBlank())
                     if (needsCorrection) {
                         val correctionData = mutableMapOf<String, Any>("booked" to isBooked)
@@ -100,7 +118,6 @@ class FlatPage : Fragment() {
                         db.collection("flats").document(flatId!!).update(correctionData)
                     }
 
-                    // Actualizar UI
                     titleflatPage.text = title
                     textPrice.text = price
                     textDescription.text = description
@@ -148,10 +165,30 @@ class FlatPage : Fragment() {
             transaction.addToBackStack(null)
             transaction.commit()
         }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val origin = arguments?.getString("origin")
 
+                val fragmentToReturn = when (origin) {
+                    "guestProfile" -> GuestProfile()
+                    "searchMap" -> SearchMap()
+                    else -> null
+                }
+
+                if (fragmentToReturn != null) {
+                    val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.contenedor, fragmentToReturn)
+                    transaction.commit()
+                } else {
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+
+            }
+        })
         return view
     }
 
+    // Actualiza en Firestore el estado de reserva y el usuario asociado
     private fun updateBookingStatus(flatId: String, isBooked: Boolean) {
         val loggedInUser = SessionManager.getLoggedInUser() ?: ""
 
@@ -174,7 +211,7 @@ class FlatPage : Fragment() {
                 println("Error al actualizar: ${e.message}")
             }
     }
-
+    // Cambia la apariencia del botón según el estado de reserva
     private fun updateButtonUI(button: Button, isBooked: Boolean) {
         if (isBooked) {
             button.setBackgroundColor(Color.GREEN)
